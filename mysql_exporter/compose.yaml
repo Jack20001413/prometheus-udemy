@@ -1,0 +1,51 @@
+services:
+    prometheus:
+        image: prom/prometheus
+        container_name: prometheus-server
+        restart: unless-stopped
+        volumes:
+        - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yml
+        - prometheus:/prometheus
+        ports:
+        - 9090:9090
+        networks:
+        - db
+        depends_on:
+        - exporter
+
+    db:
+        image: mysql
+        container_name: mysqld
+        restart: always
+        environment:
+            - MYSQL_ROOT_PASSWORD=J@ckStune286
+            - MYSQL_USER=jack
+            - MYSQL_PASSWORD=p@SsW0Rd
+            - MYSQL_DATABASE=prom_exporter_learn
+        volumes:
+        - mysql:/var/lib/mysql
+        networks:
+        - db
+
+    exporter:
+      image: prom/mysqld-exporter
+      container_name: mysql_exporter
+      restart: unless-stopped
+      command:
+        - "--mysqld.address=mysqld:3306"
+      ports:
+        - 9104:9104
+      volumes:
+        - ./mysqld_exporter/.my.cnf:/.my.cnf
+      networks:
+        - db
+      depends_on:
+        - db
+
+networks:
+  db:
+    driver: bridge
+
+volumes:
+  prometheus: {}
+  mysql: {}
