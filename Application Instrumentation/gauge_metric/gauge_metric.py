@@ -1,8 +1,14 @@
 import http.server
+import os
 import time
+from dotenv import load_dotenv
 from prometheus_client import start_http_server, Gauge
 
-REQUEST_IN_PROGRESS = Gauge('reuests_inprogress', "Number of Live Request on Application")
+load_dotenv()
+
+HOST = os.getenv("HOST")
+
+REQUEST_IN_PROGRESS = Gauge('requests_inprogress', "Number of Live Request on Application")
 REQUEST_LAST_EXECUTED = Gauge("request_last_served", "Time the application was last servered") 
 
 class HandleRequests(http.server.BaseHTTPRequestHandler):
@@ -21,6 +27,6 @@ class HandleRequests(http.server.BaseHTTPRequestHandler):
         #REQUEST_IN_PROGRESS.dec() 
 
 if __name__ == "__main__":
-    start_http_server(5001)
-    server = http.server.HTTPServer(('178.62.224.102', 5000), HandleRequests)
+    start_http_server(5003)
+    server = http.server.HTTPServer((HOST, 5000), HandleRequests)
     server.serve_forever()

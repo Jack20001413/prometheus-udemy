@@ -1,0 +1,35 @@
+global:
+  scrape_interval: 15s 
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+        labels:
+          app: "prometheus"
+
+  - job_name: "python-http-server"
+    static_configs:
+      - targets:
+          - http-server:5001
+  
+  - job_name: "python-counter-metric"
+    static_configs:
+      - targets:
+          - counter-metric:5002
+
+  - job_name: "python-gauge-metric"
+    static_configs:
+      - targets:
+          - gauge-metric:5003
+          
+  - job_name: "python-summary-metric"
+    static_configs:
+      - targets:
+          - summary-metric:5004
+
+  - job_name: "python-histogram-metric"
+    static_configs:
+      - targets:
+          - histogram-metric:5005

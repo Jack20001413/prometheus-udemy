@@ -1,5 +1,11 @@
 import http.server
+import os
+from dotenv import load_dotenv
 from prometheus_client import start_http_server
+
+load_dotenv()
+
+HOST = os.getenv("HOST")
 
 class HandleRequests(http.server.BaseHTTPRequestHandler):
 
@@ -12,5 +18,5 @@ class HandleRequests(http.server.BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     start_http_server(5001)
-    server = http.server.HTTPServer(('178.62.224.102', 5000), HandleRequests)
+    server = http.server.HTTPServer((HOST, 5000), HandleRequests)
     server.serve_forever()

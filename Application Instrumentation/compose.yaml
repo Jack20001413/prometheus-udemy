@@ -1,0 +1,60 @@
+services:
+
+    http-server:
+        image: jackdock777/python_prome_http_server:latest
+        build:
+            context: ./http_server
+            dockerfile: Dockerfile
+        ports:
+        - 5000:5000
+
+    counter-metric:
+        image: jackdock777/python_prome_counter_metric:latest
+        build:
+            context: ./counter_metric
+            dockerfile: Dockerfile
+        ports:
+        - 5001:5000
+
+    gauge-metric:
+        image: jackdock777/python_prome_gauge_metric:latest
+        build:
+            context: ./gauge_metric
+            dockerfile: Dockerfile
+        ports:
+        - 5002:5000
+
+    histogram-metric:
+        image: jackdock777/python_prome_histogram_metric:latest
+        build:
+            context: ./histogram_metric
+            dockerfile: Dockerfile
+        ports:
+        - 5003:5000
+
+    summary-metric:
+        image: jackdock777/python_prome_summary_metric:latest
+        build:
+            context: ./summary_metric
+            dockerfile: Dockerfile
+        ports:
+        - 5004:5000
+
+    prometheus:
+        image: prom/prometheus:latest
+        container_name: prometheus-server
+        restart: unless-stopped
+        volumes:
+        - ./prometheus.yml:/etc/prometheus/prometheus.yml
+        - prometheus:/prometheus
+        ports:
+        - 9090:9090
+        depends_on:
+        - http-server
+        - counter-metric
+        - gauge-metric
+        - summary-metric
+        - histogram-metric
+
+volumes:
+    prometheus: {}

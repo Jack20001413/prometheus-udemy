@@ -1,12 +1,18 @@
 import http.server
+import os
+from dotenv import load_dotenv
 from prometheus_client import start_http_server, Counter
+
+load_dotenv()
+
+HOST = os.getenv("HOST")
 
 REQUEST_COUNT = Counter("app_request_counts", "Total HTTP Request Count", ['python_custom_app','endpoint'])
 
 class HandleRequests(http.server.BaseHTTPRequestHandler):
 
     def do_GET(self):
-        #REQUEST_COUNT.inc()
+        # REQUEST_COUNT.inc()
         REQUEST_COUNT.labels('get_funcation', self.path).inc()
         self.send_response(200)
         self.send_header("Content-type", "text/html")
@@ -15,6 +21,6 @@ class HandleRequests(http.server.BaseHTTPRequestHandler):
         self.wfile.close
 
 if __name__ == "__main__":
-    start_http_server(5001)
-    server = http.server.HTTPServer(('178.62.224.102', 5000), HandleRequests)
+    start_http_server(5002)
+    server = http.server.HTTPServer((HOST, 5000), HandleRequests)
     server.serve_forever()
