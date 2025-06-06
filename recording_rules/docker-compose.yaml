@@ -1,0 +1,29 @@
+services:
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus-server
+    restart: no
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yml
+      - prometheus:/prometheus
+      - ./rules:/etc/prometheus/rules
+    ports:
+      - 9090:9090
+    command:
+      - --web.enable-lifecycle
+      - --config.file=/etc/prometheus/prometheus.yml
+
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node_exporter
+    restart: unless-stopped
+    volumes: 
+        - /:/host:ro
+    pid: host
+    command: 
+      - "--path.rootfs=/host"
+    ports:
+      - 9100:9100
+
+volumes:
+  prometheus: {}
