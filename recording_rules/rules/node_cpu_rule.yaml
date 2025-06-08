@@ -1,5 +1,0 @@
-groups:
-  - name: The average rate of node CPU
-    rules:
-    - record: node_cpu_rate_average_by_5m
-      expr: avg(rate(node_cpu_seconds_total[5m])) by (cpu)
