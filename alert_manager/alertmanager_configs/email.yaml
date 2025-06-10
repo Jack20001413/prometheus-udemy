@@ -1,0 +1,13 @@
+global:
+route:
+  receiver: gmail
+
+receivers:
+- name: gmail
+  email_configs:
+  - to: "edenjackylle@gmail.com"
+    from: "tranvivan2k@gmail.com"
+    smarthost: smtp.gmail.com:587
+    auth_username: "tranvivan2k@gmail.com"
+    auth_identity: "tranvivan2k@gmail.com"
+    auth_password: "16-digit password" # Get from Google Account's App Passwords
