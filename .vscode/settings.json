@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "**/*-compose.yaml": "dockercompose",
+        "**/*.{yaml, yml}": "yaml"
+    }
+}
