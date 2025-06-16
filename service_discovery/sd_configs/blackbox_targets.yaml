@@ -1,0 +1,4 @@
+- targets:
+  - blackbox-exporter:9115
+  labels:
+    env: production

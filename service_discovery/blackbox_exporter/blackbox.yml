@@ -1,0 +1,25 @@
+modules:
+  http_2xx:
+    prober: http
+  
+  http_ipv4:
+    prober: http
+    http:
+      preferred_ip_protocol: ip4
+  
+  http_find_content_facebook:
+    prober: http
+    http:
+      preferred_ip_protocol: ip4
+      fail_if_body_not_matches_regexp:
+        - "Facebook"
+
+  tcp_connect:
+    prober: tcp
+  
+  dns_google:
+    prober: dns
+    dns:
+      transport_protocol: "tcp"
+      preferred_ip_protocol: ip4
+      query_name: "www.facebook.com"

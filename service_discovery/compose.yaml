@@ -1,0 +1,27 @@
+services:
+    prometheus:
+        image: prom/prometheus
+        container_name: prometheus-server
+        restart: unless-stopped
+        volumes:
+        - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+        - prometheus:/prometheus
+        - ./sd_configs:/etc/prometheus/sd_configs
+        ports:
+        - 9090:9090
+        depends_on:
+        - exporter
+  
+    exporter:
+        image: quay.io/prometheus/blackbox-exporter:latest
+        container_name: blackbox-exporter
+        restart: unless-stopped
+        command:
+        - "--config.file=/config/blackbox.yml"
+        ports:
+        - 9115:9115
+        volumes:
+        - ./blackbox_exporter:/config
+
+volumes:
+  prometheus: {}

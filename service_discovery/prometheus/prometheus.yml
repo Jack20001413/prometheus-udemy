@@ -1,0 +1,30 @@
+global:
+  scrape_interval: 15s 
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: "prometheus"
+    file_sd_configs:
+    - files:
+      - "./sd_configs/prometheus_targets.yaml"
+
+  - job_name: "blackbox_exporter"
+    file_sd_configs:
+    - files:
+      - "./sd_configs/blackbox_targets.yaml"
+
+  - job_name: "prometheus_io"
+    metrics_path: /probe
+    params:
+      module:
+      - http_ipv4
+    static_configs:
+      - targets:
+          - prometheus.io
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__address__] # It's OK to use __address__ or __param_target since they share the same value
+        target_label: instance
+      - target_label: __address__
+        replacement: "blackbox-exporter:9115"
