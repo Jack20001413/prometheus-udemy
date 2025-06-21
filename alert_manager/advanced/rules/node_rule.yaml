@@ -1,0 +1,62 @@
+groups:
+  - name: The average rate of node CPU
+    rules:
+    - record: node_cpu_rate_average_by_5m
+      expr: avg(rate(node_cpu_seconds_total[5m])) by (cpu)
+
+  - name: Node rules
+    rules:
+    - alert: Node Exporter Down
+      expr: up{job="node_exporter"} == 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Node Exporter is down"
+        description: "Node Exporter is not running on the node for more than 1 minute. The severity is critical on {{ $labels.instance }}."
+
+    - record: node_memory_MemAvailable_percentage
+      expr: (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100
+
+    - alert: Node Memory Usage above 60%
+      # Uncomment this line if you want to test group_by with "warning"
+      # expr: (100 - node_memory_MemAvailable_percentage) >= 60
+      expr: 60 < (100 - node_memory_MemAvailable_percentage) < 80
+      for: 1m
+      labels:
+        severity: warning
+        category: memory
+      annotations:
+        summary: "Node memory is going high"
+        description: "Node memory for instance {{ $labels.instance }} has reached {{ $value }}%"
+    
+    # Comment this block if you want to test group_by with "warning"
+    - alert: Node Memory Usage above 80%
+      expr: (100 - node_memory_MemAvailable_percentage) >= 80
+      for: 1m
+      labels:
+        severity: critical
+        category: memory
+      annotations:
+        summary: "Node memory is going high"
+        description: "Node memory for instance {{ $labels.instance }} has reached {{ $value }}%"
+
+    - alert: Node CPU Usage Over 15%
+      expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[1m])) * 100) > 15
+      for: 1m 
+      labels:
+        severity: critical
+        category: cpu
+      annotations:
+        summary: Node CPU is over 15%
+        description: CPU load for instance {{ $labels.instance }} has reached {{ $value }}%
+    
+    - alert: Node Free Disk Space Less Than 30%
+      expr: (sum by (instance) (node_filesystem_free_bytes) / sum by (instance) (node_filesystem_size_bytes)) * 100 < 30
+      for: 1m
+      labels:
+        severity: warning
+        category: disk
+      annotations:
+        summary: Node free disk space is running out
+        description: "Node disk space is going full (< 30% left)\n Current free disk space is {{ $value}}"

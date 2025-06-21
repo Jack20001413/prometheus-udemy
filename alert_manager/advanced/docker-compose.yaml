@@ -13,23 +13,23 @@ services:
       - --web.enable-lifecycle
       - --config.file=/etc/prometheus/prometheus.yml
 
-  # node_exporter:
-  #   image: quay.io/prometheus/node-exporter:latest
-  #   container_name: node_exporter
-  #   restart: unless-stopped
-  #   volumes: 
-  #       - /:/host:ro
-  #   pid: host
-  #   command: 
-  #     - "--path.rootfs=/host"
-  #   ports:
-  #     - 9100:9100
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node_exporter
+    restart: unless-stopped
+    volumes: 
+        - /:/host:ro
+    pid: host
+    command: 
+      - "--path.rootfs=/host"
+    ports:
+      - 9100:9100
 
   alert-manager:
     image: quay.io/prometheus/alertmanager
     container_name: alertmanager
     volumes:
-      - ./alertmanager_configs/email.yaml:/etc/alertmanager/alertmanager.yml
+      - ./alertmanager.yml:/etc/alertmanager/alertmanager.yml
     ports:
       - 9093:9093
     depends_on:

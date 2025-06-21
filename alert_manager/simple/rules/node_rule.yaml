@@ -13,4 +13,4 @@ groups:
         severity: critical
       annotations:
         summary: "Node Exporter is down"
-        description: "Node Exporter is not running on the node for more than 1 minute. The severity is {{ $labels.severity }}."
+        description: "Node Exporter is not running on the node for more than 1 minute. The severity is critical on {{ $labels.instance }}."

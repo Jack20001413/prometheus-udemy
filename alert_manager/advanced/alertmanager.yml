@@ -1,0 +1,59 @@
+global:
+  smtp_from: "tranvivan2k@gmail.com"
+  smtp_smarthost: smtp.gmail.com:587
+  smtp_auth_username: "tranvivan2k@gmail.com"
+  smtp_auth_identity: "tranvivan2k@gmail.com"
+  smtp_auth_password: "16-digit password" # Get from Google Account's App Passwords
+
+# Uncomment this block if you want to test group_by with "warning"
+# route:
+#   receiver: admin
+#   group_by: ['severity']
+#   routes:
+#   - match_re:
+#       category: (memory|cpu|disk)
+#     routes:
+#     - match:
+#         severity: warning
+#       receiver: devops-team
+#     - match:
+#         severity: critical
+#       receiver: technical-architect
+#     - match_re:
+#         category: (disk|cpu)
+#       receiver: devops-team
+
+route:
+  receiver: admin
+  group_by: ['severity']
+  routes:
+  - match_re:
+      category: memory
+    routes:
+    - match:
+        severity: warning
+      receiver: devops-team
+    - match:
+        severity: critical
+      receiver: technical-architect
+  - match_re:
+      category: (disk|cpu)
+    receiver: devops-team
+
+
+receivers:
+- name: admin
+  email_configs:
+  - to: "edenjackylle@gmail.com"
+  
+- name: devops-team
+  email_configs:
+  - to: "devopsteam@gmail.com"
+  - to: "edenjackylle@gmail.com"
+
+- name: technical-architect
+  email_configs:
+  - to: "superta@gmail.com"
+  - to: "edenjackylle@gmail.com"
+
+
