@@ -1,0 +1,28 @@
+services:
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus-server
+    restart: unless-stopped
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node_exporter
+    restart: unless-stopped
+    volumes: 
+        - /:/host:ro
+    pid: host
+    command: 
+      - "--path.rootfs=/host"
+    ports:
+      - 9100:9100
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: no
+    ports:
+      - 3000:3000
