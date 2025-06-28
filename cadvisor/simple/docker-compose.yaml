@@ -1,0 +1,30 @@
+services:
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus-server
+    restart: unless-stopped
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    ports:
+      - 9090:9090
+    command:
+      - --web.enable-lifecycle
+      - --config.file=/etc/prometheus/prometheus.yml
+
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    restart: unless-stopped
+    volumes: 
+        - /:/rootfs:ro
+        - /var/run:/var/run:ro
+        - /sys:/sys:ro
+        - /var/lib/docker/:/var/lib/docker/:ro
+        - /dev/disk/:/dev/disk/:ro
+    ports:
+      - 8080:8080
+
+volumes:
+  prometheus-data: {}
